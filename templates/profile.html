@@ -1,0 +1,314 @@
+{% include 'default.html' %}
+
+<style>
+    .profile-container {
+        padding: 30px 40px;
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 30px;
+        animation: fadeIn 0.5s ease-in;
+        width: 100%;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .profile-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        height: fit-content;
+        border-top: 5px solid var(--color-brown);
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--color-gold);
+        margin-bottom: 15px;
+        background-color: #f0f0f0;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+    }
+
+    .profile-username {
+        color: #777;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .profile-bio-box {
+        background: var(--color-bg-light);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        text-align: left;
+        font-size: 0.9rem;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .profile-bio-box h4 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: var(--color-brown);
+        margin-bottom: 8px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+    }
+
+    .tag {
+        display: inline-block;
+        background: #fff;
+        border: 1px solid var(--color-gold);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 2px;
+        color: #444;
+    }
+
+    .settings-section {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: 100%;
+    }
+
+    .form-box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--color-brown);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        background: var(--color-bg-light);
+        transition: border 0.3s;
+        width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: var(--color-brown);
+        background: #fff;
+    }
+
+    .btn-save {
+        background: var(--color-brown);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-save:hover {
+        background: var(--color-gold);
+        color: var(--text-dark);
+    }
+
+    @media (max-width: 900px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+        .profile-card {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .profile-container {
+            padding: 15px;
+        }
+        .form-box {
+            padding: 20px;
+        }
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .section-title {
+            font-size: 1.1rem;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <aside class="profile-card">
+        {% if user.avatar %}
+        {% if user.avatar.startswith('http') %}
+        <img src="{{ user.avatar }}" class="profile-avatar" alt="Avatar">
+        {% else %}
+        <img src="{{ url_for('static', filename='uploads/' + user.avatar.replace('uploads/', '')) }}" class="profile-avatar" alt="Avatar">
+        {% endif %}
+        {% else %}
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}" class="profile-avatar" alt="Default Avatar">
+        {% endif %}
+        <div>
+            <h3 class="profile-name">{{ user.name or 'New User' }}</h3>
+            <p class="profile-username">@{{ user.username }}</p>
+        </div>
+        {% if user.about %}
+        <div class="profile-bio-box">
+            <h4>About Me</h4>
+            {{ user.about }}
+        </div>
+        {% endif %}
+        {% if user.skills %}
+        <div class="profile-bio-box">
+            <h4>Skills</h4>
+            <div>
+                {% for skill in user.skills.split(',') %}
+                <span class="tag">{{ skill.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if user.hobbies %}
+        <div class="profile-bio-box">
+            <h4>Hobbies</h4>
+            <div style="font-style: italic;">{{ user.hobbies }}</div>
+        </div>
+        {% endif %}
+    </aside>
+
+    <div class="settings-section">
+        <div class="form-box">
+            <h3 class="section-title"><i class='bx bx-user-pin'></i> Edit Profile Details</h3>
+            <form action="{{ url_for('update_profile') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" value="{{ user.name or '' }}" placeholder="Your Real Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Login Username</label>
+                        <input type="text" name="username" value="{{ user.username }}" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>About Me</label>
+                        <textarea name="about" rows="3" placeholder="Tell us a bit about yourself...">{{ user.about or '' }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Skills (Comma separated)</label>
+                        <input type="text" name="skills" value="{{ user.skills or '' }}" placeholder="Drawing, Coding, Math...">
+                    </div>
+                    <div class="form-group">
+                        <label>Hobbies</label>
+                        <input type="text" name="hobbies" value="{{ user.hobbies or '' }}" placeholder="Gaming, Reading...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Change Avatar</label>
+                        <input type="file" name="avatar" accept="image/*">
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="submit" class="btn-save">Save Profile Changes</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box">
+            <h3 class="section-title"><i class='bx bx-lock-alt'></i> Security Settings</h3>
+            <form action="{{ url_for('change_password') }}" method="POST" onsubmit="return validatePassword()">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Current Password</label>
+                        <input type="password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="new_password" name="new_password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="submit" class="btn-save">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validatePassword() {
+        var newPass = document.getElementById("new_password").value;
+        var confirmPass = document.getElementById("confirm_password").value;
+        if (newPass !== confirmPass) {
+            alert("New passwords do not match!");
+            return false;
+        }
+        return true;
+    }
+</script>

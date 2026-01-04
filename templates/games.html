@@ -1,0 +1,502 @@
+{% include 'default.html' %}
+
+<style>
+    .home-content {
+        padding: 20px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        flex-grow: 1;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-container {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid var(--color-brown, #FA7070);
+    }
+
+    .form-container h2 {
+        margin-bottom: 20px;
+        color: var(--text-dark, #333);
+        font-size: 1.5rem;
+    }
+
+    .game-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group.two-thirds {
+        grid-column: span 2;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--color-brown, #FA7070);
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        background: var(--color-bg-light, #FEFDED);
+        width: 100%;
+        font-family: inherit;
+    }
+
+    .form-group input[type="file"] {
+        background: white;
+        padding: 9px 15px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        border-color: var(--color-brown, #FA7070);
+    }
+
+    .btn-submit {
+        padding: 12px 25px;
+        background: var(--color-brown, #FA7070);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        height: 45px;
+        width: 100%;
+        transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: var(--color-gold, #A1C398);
+        color: var(--text-dark, #333);
+    }
+
+    .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .game-card {
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-bottom: 3px solid var(--color-gold, #A1C398);
+    }
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-meta {
+        font-size: 0.75rem;
+        color: #999;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark, #333);
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+
+    .card-content {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+
+    .btn-play {
+        display: block;
+        text-align: center;
+        width: 100%;
+        padding: 10px;
+        background: var(--color-brown, #FA7070);
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        transition: background 0.2s;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-play:hover {
+        background: var(--color-gold, #A1C398);
+        color: var(--text-dark);
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+        align-items: stretch;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: 0.3s;
+        height: 40px;
+    }
+
+    .btn-edit {
+        background: #f0f0f0;
+        color: var(--text-dark, #333);
+    }
+
+    .btn-edit:hover {
+        background: #e0e0e0;
+    }
+
+    .delete-form {
+        flex: 1;
+        margin: 0;
+        display: flex;
+    }
+
+    .btn-delete {
+        background: #fff0f0;
+        color: #e74c3c;
+        width: 100%;
+    }
+
+    .btn-delete:hover {
+        background: #fadbd8;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        border-top: 5px solid var(--color-brown, #FA7070);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .play-modal-content {
+        max-width: 900px;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .game-frame-container {
+        flex-grow: 1;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .game-frame-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 28px;
+        cursor: pointer;
+        color: #aaa;
+        z-index: 1010;
+    }
+
+    .close-modal:hover {
+        color: #333;
+    }
+
+    @media (max-width: 1024px) {
+        .game-form {
+            grid-template-columns: 1fr 1fr;
+        }
+        .form-group.two-thirds {
+            grid-column: span 2;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .home-content {
+            padding: 20px;
+        }
+        .form-container {
+            padding: 20px;
+        }
+        .game-form {
+            grid-template-columns: 1fr;
+        }
+        .form-group.two-thirds {
+            grid-column: 1 / -1;
+        }
+        .games-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 480px) {
+        .home-content {
+            padding: 15px;
+        }
+        .games-grid {
+            grid-template-columns: 1fr;
+        }
+        .modal-content {
+            margin: 15% auto;
+            width: 95%;
+            padding: 20px;
+        }
+        .card-img {
+            height: 160px;
+        }
+    }
+</style>
+
+<div class="home-content">
+    <div class="form-container">
+        <h2><i class='bx bx-joystick'></i> Add New Game</h2>
+        <form action="{{ url_for('add_game') }}" method="POST" enctype="multipart/form-data" class="game-form">
+            <div class="form-group">
+                <label>Game Title</label>
+                <input type="text" name="title" required maxlength="150">
+            </div>
+            <div class="form-group">
+                <label>External Link</label>
+                <input type="url" name="link">
+            </div>
+            <div class="form-group">
+                <label>Cover Image</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+            <div class="form-group full-width">
+                <label>Game Embed Code (HTML/Iframe/Script)</label>
+                <textarea name="embed_code" rows="4" placeholder="<iframe src='...'></iframe> OR <script src='...'></script>" style="font-family: monospace; font-size: 0.9em;"></textarea>
+            </div>
+            <div class="form-group full-width">
+                <label>Description</label>
+                <textarea name="description" rows="3" required></textarea>
+            </div>
+            <div class="form-group full-width">
+                <button type="submit" class="btn-submit">Add Game</button>
+            </div>
+        </form>
+    </div>
+    <div class="games-grid">
+        {% for game in games %}
+        <div class="game-card">
+            {% if game.image %}
+            {% if game.image.startswith('http') %}
+            <img src="{{ game.image }}" class="card-img" alt="{{ game.title }}">
+            {% elif 'uploads/' in game.image %}
+            <img src="{{ url_for('static', filename=game.image) }}" class="card-img" alt="{{ game.title }}">
+            {% else %}
+            <img src="{{ url_for('static', filename='uploads/' + game.image) }}" class="card-img" alt="{{ game.title }}">
+            {% endif %}
+            {% else %}
+            <img src="https://placehold.co/600x400?text=No+Image" class="card-img" alt="Placeholder">
+            {% endif %}
+            <div class="card-body">
+                <h3 class="card-title">{{ game.title }}</h3>
+                <p class="card-content">{{ game.description }}</p>
+                {% if game.embed_code %}
+                <button onclick='openPlayModal(`{{ game.embed_code|safe }}`, `{{ game.title }}`)' class="btn-play">Play Now</button>
+                {% elif game.link %}
+                <a href="{{ game.link }}" target="_blank" class="btn-play">Play External</a>
+                {% else %}
+                <button class="btn-play" style="opacity: 0.5; cursor: not-allowed;">Unavailable</button>
+                {% endif %}
+                <div class="card-actions">
+                    <button onclick="openEditModal('{{ game.id }}', '{{ game.title }}', `{{ game.link }}`, `{{ game.description }}`, `{{ game.embed_code|replace('`', '\`') if game.embed_code else '' }}`)" class="btn-action btn-edit">Edit</button>
+                    <form action="{{ url_for('delete_game', id=game.id) }}" method="POST" class="delete-form" onsubmit="return confirm('Delete this game?');">
+                        <button type="submit" class="btn-action btn-delete">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="playModal" class="modal">
+    <div class="modal-content play-modal-content">
+        <span class="close-modal" onclick="closePlayModal()">&times;</span>
+        <h2 id="playModalTitle" style="margin-bottom: 10px; color: var(--color-brown, #FA7070);">Playing Game</h2>
+        <div id="gameContainer" class="game-frame-container"></div>
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Game</h2>
+        <form id="editForm" action="" method="POST" enctype="multipart/form-data" class="game-form" style="display: flex; flex-direction: column; align-items: stretch;">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="edit_title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input type="url" id="edit_link" name="link">
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>Embed</label>
+                <textarea id="edit_embed_code" name="embed_code" rows="4" style="font-family: monospace;"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Desc</label>
+                <textarea id="edit_description" name="description" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top: 10px;">Update</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const playModal = document.getElementById("playModal");
+    const gameContainer = document.getElementById("gameContainer");
+
+    function openPlayModal(embedCode, title) {
+        if (!embedCode || embedCode === 'None') return;
+        const titleEl = document.getElementById('playModalTitle');
+        if (titleEl) {
+            titleEl.innerText = title || "Playing Game";
+        }
+        gameContainer.innerHTML = '';
+        var iframe = document.createElement('iframe');
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        gameContainer.appendChild(iframe);
+        var doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write('<style>body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#000;overflow:hidden;}</style>');
+        doc.write(embedCode);
+        doc.close();
+        playModal.style.display = "flex";
+        playModal.style.justifyContent = "center";
+        playModal.style.alignItems = "center";
+    }
+
+    function closePlayModal() {
+        playModal.style.display = "none";
+        gameContainer.innerHTML = "";
+    }
+
+    const editModal = document.getElementById("editModal");
+    const editForm = document.getElementById("editForm");
+
+    function openEditModal(id, title, link, description, embed) {
+        document.getElementById("edit_title").value = title;
+        document.getElementById("edit_link").value = link === 'None' ? '' : link;
+        document.getElementById("edit_description").value = description;
+        document.getElementById("edit_embed_code").value = embed === 'None' ? '' : embed;
+        editForm.action = "/edit_game/" + id;
+        editModal.style.display = "block";
+    }
+
+    function closeEditModal() {
+        editModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == playModal) closePlayModal();
+        if (event.target == editModal) closeEditModal();
+    }
+</script>

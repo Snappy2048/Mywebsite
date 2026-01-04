@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Cornerstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #FAF8F1;
+            --pale-yellow: #FAEAB1;
+            --golden-sand: #E5BA73;
+            --bronze-brown: #C58940;
+        }
+
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #C58940 #FAF8F1;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FAF8F1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C58940;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--bronze-brown);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .nav-link {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .section-title-bg {
+            background-color: var(--pale-yellow);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 999px;
+            border: 2px solid var(--golden-sand);
+            color: #fff;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .card-hover {
+            background-color: #fff;
+            border: 3px solid var(--pale-yellow);
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+        }
+
+        .card-hover:hover {
+            border-color: var(--golden-sand);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px -5px rgba(197, 137, 64, 0.3);
+        }
+
+        .game-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .game-modal-content {
+            background: #fff;
+            padding: 15px 15px 0 15px;
+            border-radius: 1.5rem;
+            width: 95%;
+            max-width: 1000px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 4px solid var(--golden-sand);
+            box-shadow: 0 0 50px rgba(197, 137, 64, 0.5);
+            overflow: hidden;
+        }
+
+        .game-container {
+            flex-grow: 1;
+            background: var(--bg-cream);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 -15px;
+            border-bottom-left-radius: calc(1.5rem - 4px);
+            border-bottom-right-radius: calc(1.5rem - 4px);
+        }
+
+        .nav-pill {
+            transition: all 0.3s ease;
+        }
+
+        .nav-pill:hover {
+            background-color: var(--pale-yellow);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'flash_messages.html' %}
+
+    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-[#FAF8F1]/95 backdrop-blur-sm border-b-2 border-[#FAEAB1]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <a href="{{ url_for('index') }}"
+                class="text-xl md:text-3xl font-bold text-[color:var(--bronze-brown)] wiggle-hover self-start md:self-center">
+                <i class="fa-solid fa-rocket"></i> Creative Cornerstone
+            </a>
+            <div
+                class="hidden md:flex bg-white/80 px-4 py-2 rounded-full border-2 border-[color:var(--pale-yellow)] shadow-sm space-x-2 text-sm font-bold text-[color:var(--bronze-brown)]">
+                <a href="{{ url_for('index') }}" class="nav-pill px-4 py-2 rounded-full">Home</a>
+                <a href="{{ url_for('home_games') }}"
+                    class="nav-pill px-4 py-2 rounded-full {{ 'bg-[color:var(--pale-yellow)] text-white' if request.endpoint == 'home_games' else '' }}">Ctrl+Alt
+                    Achieve</a>
+                <a href="{{ url_for('home_blogs') }}" class="nav-pill px-4 py-2 rounded-full">Blog</a>
+                <a href="{{ url_for('home_projects') }}" class="nav-pill px-4 py-2 rounded-full">Project</a>
+            </div>
+            <button id="mobile-menu-btn"
+                class="md:hidden absolute top-5 right-6 text-xl text-[color:var(--bronze-brown)]">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full left-0 w-full bg-[color:var(--bg-cream)] border-b-2 border-[color:var(--pale-yellow)] p-4 flex-col space-y-4 shadow-lg text-center z-50">
+            <a href="{{ url_for('index') }}"
+                class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Home</a>
+            <a href="{{ url_for('home_games') }}"
+                class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Ctrl+Alt
+                Achieve</a>
+            <a href="{{ url_for('home_blogs') }}"
+                class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Blog</a>
+            <a href="{{ url_for('home_projects') }}"
+                class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Project</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32 pb-20 px-6 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-[color:var(--pale-yellow)] rounded-full opacity-50 -z-10 filter blur-3xl">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-96 h-96 bg-[color:var(--golden-sand)] rounded-full opacity-20 -z-10 filter blur-3xl">
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="text-4xl font-bold section-title-bg mb-6">Ctrl+Alt Achieve</h2>
+                <div
+                    class="bg-white p-6 rounded-2xl border-2 border-[color:var(--pale-yellow)] shadow-sm max-w-3xl mx-auto">
+                    <p class="text-lg opacity-80 leading-relaxed italic">
+                        I was brainstorming names for my games page and couldn’t find the perfect one. Then I asked
+                        ChatGPT for some suggestions, and one name stood out: 'Cntr.' It’s a great fit because my
+                        business is all about money, and the name captures the iconic sound of a cash
+                        register—Cha-Ching!
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                {% if games %}
+                {% for game in games %}
+                <div class="card-hover overflow-hidden group flex flex-col h-full" data-aos="fade-up"
+                    data-aos-delay="{{ loop.index * 50 }}">
+                    <div class="h-48 bg-[color:var(--golden-sand)] relative overflow-hidden">
+                        {% if game.image %}
+                        <img src="{{ url_for('static', filename='uploads/' + game.image.replace('uploads/', '')) }}"
+                            class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+                        {% else %}
+                        <div class="absolute inset-0 flex items-center justify-center text-6xl text-white opacity-50"><i
+                                class="fa-solid fa-gamepad"></i></div>
+                        {% endif %}
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold mb-2">{{ game.title }}</h3>
+                        <p class="text-sm opacity-80 mb-4 line-clamp-2 flex-grow">{{ game.description }}</p>
+
+                        {% if game.embed_code %}
+                        <button
+                            onclick='openGameModal(`{{ game.embed_code|safe }}`, `{{ game.title|escape }}`, `{{ game.description|escape if game.description else "" }}`)'
+                            class="block w-full text-center py-3 rounded-lg bg-[color:var(--pale-yellow)] text-white font-bold hover:bg-[color:var(--golden-sand)] transition-colors shadow-md">
+                            <i class="fa-solid fa-play mr-2"></i> Play Now
+                        </button>
+                        {% elif game.link %}
+                        <a href="{{ game.link }}" target="_blank"
+                            class="block w-full text-center py-3 rounded-lg bg-[color:var(--pale-yellow)] text-white font-bold hover:bg-[color:var(--golden-sand)] transition-colors shadow-md">
+                            <i class="fa-solid fa-link mr-2"></i> Play External
+                        </a>
+                        {% else %}
+                        <button
+                            class="block w-full text-center py-3 rounded-lg bg-gray-300 text-gray-500 font-bold cursor-not-allowed">
+                            Unavailable
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div
+                    class="col-span-full text-center py-20 text-gray-500 bg-white rounded-3xl border-dashed border-4 border-[color:var(--pale-yellow)]">
+                    <i class="fa-solid fa-ghost text-6xl mb-4 text-[color:var(--pale-yellow)]"></i>
+                    <p class="text-xl">No games available yet. The arcade opens soon!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[color:var(--bronze-brown)] text-[#fff] py-12 px-6 mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h2 class="text-3xl font-bold font-['Fredoka']">The Creative Cornerstone</h2>
+                <p class="text-sm opacity-80 mt-2">Let's build something amazing together.</p>
+            </div>
+            <div class="flex space-x-6 text-2xl">
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i
+                        class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i
+                        class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-12 opacity-50 text-sm border-t border-white/20 pt-6">
+            &copy; 2025 {{ profile.name if profile else 'The Creative Cornerstone' }}. All rights reserved.
+        </div>
+    </footer>
+
+    <div id="gameModalOverlay" class="game-modal-overlay">
+        <div class="game-modal-content">
+            <div class="flex justify-between items-start mb-3 gap-4">
+                <div class="flex-1 min-w-0">
+                    <h2 id="modalGameTitle" class="text-xl font-bold text-[color:var(--bronze-brown)]">Game Title</h2>
+                    <p id="modalGameDesc" class="text-sm text-gray-500 truncate mt-1"></p>
+                </div>
+                <button onclick="closeGameModal()"
+                    class="text-3xl text-gray-400 hover:text-[color:var(--bronze-brown)] transition-colors flex-shrink-0"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="publicGameContainer" class="game-container"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+                menu.classList.toggle('flex');
+            });
+        }
+
+        const gameModalOverlay = document.getElementById('gameModalOverlay');
+        const publicGameContainer = document.getElementById('publicGameContainer');
+        const modalGameTitle = document.getElementById('modalGameTitle');
+        const modalGameDesc = document.getElementById('modalGameDesc');
+
+        function openGameModal(embedCode, title, description) {
+            if (!embedCode || embedCode === 'None') return;
+
+            modalGameTitle.textContent = title;
+            modalGameDesc.textContent = description ? `(${description})` : '';
+
+            publicGameContainer.innerHTML = '';
+            var iframe = document.createElement('iframe');
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            publicGameContainer.appendChild(iframe);
+
+            var doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write('<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#FAF8F1;}body>*:first-child,iframe,embed,object,canvas{width:100%!important;height:100%!important;display:block;border:none!important;}</style>' + embedCode);
+            doc.close();
+
+            gameModalOverlay.style.display = 'flex';
+        }
+
+        function closeGameModal() {
+            gameModalOverlay.style.display = 'none';
+            publicGameContainer.innerHTML = '';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == gameModalOverlay) {
+                closeGameModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

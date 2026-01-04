@@ -1,0 +1,155 @@
+<style>
+    .flash-messages {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: fixed;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 999999;
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+    }
+
+    .flash-message {
+        background-color: #f0f0f0;
+        color: #333;
+        border-left: 6px solid #888;
+        padding: 14px 18px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        width: auto;
+        width: fit-content;
+        max-width: 90%;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: sans-serif;
+        animation: fadeIn 0.35s ease, slideUp 0.35s ease;
+        pointer-events: auto;
+        word-break: break-word;
+    }
+
+    .flash-message.success {
+        border-left-color: #4CAF50;
+        background-color: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .flash-message.error {
+        border-left-color: #f44336;
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    .flash-message.warning {
+        border-left-color: #ff9800;
+        background-color: #fff8e1;
+        color: #e65100;
+    }
+
+    .flash-message.info {
+        border-left-color: #2196F3;
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .flash-message.danger {
+        border-left-color: #d32f2f;
+        background-color: #ffcdd2;
+        color: #b71c1c;
+    }
+
+    .message-text {
+        flex: 1;
+        margin-right: 12px;
+    }
+
+    .close-btn {
+        font-weight: bold;
+        font-size: 22px;
+        color: #777;
+        cursor: pointer;
+        padding-left: 10px;
+        padding-right: 4px;
+        transition: 0.2s ease;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .close-btn:hover {
+        color: #222;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(12px);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .flash-messages {
+            max-width: 100%;
+        }
+        .flash-message {
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 92%;
+        }
+        .close-btn {
+            font-size: 20px;
+            padding-left: 6px;
+        }
+    }
+</style>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<ul class="flash-messages">
+    {% for category, message in messages %}
+    <li class="flash-message {{ category }}">
+        <span class="message-text">{{ message }}</span>
+        <span class="close-btn">&times;</span>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".flash-message").forEach(msg => {
+            const closeBtn = msg.querySelector(".close-btn");
+            closeBtn.addEventListener("click", () => fadeOut(msg));
+            setTimeout(() => fadeOut(msg), 3000);
+        });
+
+        function fadeOut(element) {
+            element.style.transition = "opacity 0.4s, transform 0.4s";
+            element.style.opacity = "0";
+            element.style.transform = "translateY(-10px)";
+            setTimeout(() => element.remove(), 400);
+        }
+    });
+</script>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Cornerstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #FAF8F1;
+            --pale-yellow: #FAEAB1;
+            --golden-sand: #E5BA73;
+            --bronze-brown: #C58940;
+        }
+
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #C58940 #FAF8F1;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FAF8F1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C58940;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--bronze-brown);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .nav-link {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .text-theme-brown {
+            color: var(--bronze-brown);
+        }
+
+        .section-title-bg {
+            background-color: var(--pale-yellow);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 999px;
+            border: 2px solid var(--golden-sand);
+            color: #fff;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--bronze-brown);
+            color: #fff;
+            transition: all 0.3s;
+            border: 2px solid var(--bronze-brown);
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--golden-sand);
+            transform: translateY(-3px) scale(1.05);
+            color: #fff;
+            border-color: var(--golden-sand);
+        }
+
+        .card-hover {
+            background-color: #fff;
+            border: 3px solid var(--pale-yellow);
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+        }
+
+        .card-hover:hover {
+            border-color: var(--golden-sand);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px -5px rgba(197, 137, 64, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .floating-img {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .pulse-border {
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% {
+                box-shadow: 0 0 0 0 rgba(229, 186, 115, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(229, 186, 115, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(229, 186, 115, 0);
+            }
+        }
+
+        .nav-pill {
+            transition: all 0.3s ease;
+        }
+
+        .nav-pill:hover {
+            background-color: var(--pale-yellow);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {% include 'flash_messages.html' %}
+
+    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-[#FAF8F1]/95 backdrop-blur-sm border-b-2 border-[#FAEAB1]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <a href="{{ url_for('index') }}" class="text-xl md:text-3xl font-bold text-[color:var(--bronze-brown)] wiggle-hover self-start md:self-center">
+                <i class="fa-solid fa-rocket"></i> Creative Cornerstone
+            </a>
+
+            <div class="hidden md:flex bg-white/80 px-4 py-2 rounded-full border-2 border-[color:var(--pale-yellow)] shadow-sm space-x-2 text-sm font-bold text-[color:var(--bronze-brown)]">
+                <a href="{{ url_for('index') }}" class="nav-pill px-4 py-2 rounded-full {{ 'bg-[color:var(--pale-yellow)] text-white' if request.endpoint == 'index' else '' }}">Home</a>
+                <a href="{{ url_for('home_games') }}" class="nav-pill px-4 py-2 rounded-full">Ctrl+Alt Achieve</a>
+                <a href="{{ url_for('home_blogs') }}" class="nav-pill px-4 py-2 rounded-full">Blog</a>
+                <a href="{{ url_for('home_projects') }}" class="nav-pill px-4 py-2 rounded-full">Project</a>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden absolute top-5 right-6 text-xl text-[color:var(--bronze-brown)]">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[color:var(--bg-cream)] border-b-2 border-[color:var(--pale-yellow)] p-4 flex-col space-y-4 shadow-lg text-center z-50">
+            <a href="{{ url_for('index') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Home</a>
+            <a href="{{ url_for('home_games') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Ctrl+Alt Achieve</a>
+            <a href="{{ url_for('home_blogs') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Blog</a>
+            <a href="{{ url_for('home_projects') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Project</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-32">
+        <header id="about" class="pb-20 px-6 flex items-center">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-down-right">
+                    <div class="bg-[color:var(--pale-yellow)] text-white inline-block px-4 py-1 rounded-full mb-4 font-bold text-sm tracking-wide border border-[color:var(--golden-sand)]">
+                        HELLO WORLD! <i class="fa-solid fa-hand"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[color:var(--bronze-brown)]">
+                        I'm <span id="typewriter" class="text-[color:var(--golden-sand)]"></span>
+                    </h1>
+                    <p class="text-xl mb-8 opacity-90 leading-relaxed">
+                        {{ profile.about if profile and profile.about else "Welcome to my digital playground! I love building cool things and exploring new technologies." }}
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="{{ url_for('home_projects') }}" class="btn-primary px-8 py-3 rounded-full font-bold text-lg shadow-lg inline-flex items-center gap-2">
+                            See My Work <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="mt-12 grid grid-cols-3 gap-4 text-center">
+                        {% if profile and profile.hobbies %}
+                            {% for hobby in profile.hobbies.split(',')[:3] %}
+                            <div class="p-4 bg-white rounded-2xl border-2 border-[color:var(--pale-yellow)]" data-aos="zoom-in" data-aos-delay="{{ loop.index * 100 }}">
+                                <div class="text-3xl mb-1 text-[color:var(--golden-sand)]"><i class="fa-solid fa-star"></i></div>
+                                <div class="font-bold text-sm">{{ hobby.strip() }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-4 bg-white rounded-2xl border-2 border-[color:var(--pale-yellow)]">
+                                <i class="fa-solid fa-code text-3xl text-[color:var(--golden-sand)]"></i>
+                                <div class="font-bold text-sm">Coder</div>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl border-2 border-[color:var(--pale-yellow)]">
+                                <i class="fa-solid fa-gamepad text-3xl text-[color:var(--golden-sand)]"></i>
+                                <div class="font-bold text-sm">Gamer</div>
+                            </div>
+                            <div class="p-4 bg-white rounded-2xl border-2 border-[color:var(--pale-yellow)]">
+                                <i class="fa-solid fa-palette text-3xl text-[color:var(--golden-sand)]"></i>
+                                <div class="font-bold text-sm">Artist</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="relative" data-aos="fade-left">
+                    <div class="relative bg-[color:var(--pale-yellow)] rounded-full p-2 border-4 border-[color:var(--bronze-brown)] floating-img overflow-hidden">
+                        {% if profile and profile.avatar %}
+                            {% if profile.avatar.startswith('http') %}
+                                <img src="{{ profile.avatar }}" class="w-full h-auto object-cover rounded-full" alt="Avatar">
+                            {% elif 'uploads/' in profile.avatar %}
+                                <img src="{{ url_for('static', filename=profile.avatar) }}" class="w-full h-auto object-cover rounded-full" alt="Avatar">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='uploads/' + profile.avatar) }}" class="w-full h-auto object-cover rounded-full" alt="Avatar">
+                            {% endif %}
+                        {% else %}
+                            <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Jack" class="w-full h-auto object-cover rounded-full" alt="Placeholder">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="video-showcase" class="py-12 px-6 bg-[color:var(--bg-cream)]">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-8" data-aos="fade-up">
+                    <h2 class="text-4xl font-bold mb-4 section-title-bg">Featured Video</h2>
+                </div>
+                <div class="relative rounded-3xl overflow-hidden border-4 border-[color:var(--golden-sand)] shadow-2xl bg-black pulse-border aspect-video" data-aos="zoom-in-up">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/yegW6Bh2q90?si=mo51PG8WJJ1iQPXw"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                        class="absolute inset-0 w-full h-full">
+                    </iframe>
+                </div>
+                <p class="text-center mt-6 text-lg font-bold text-[color:var(--bronze-brown)] opacity-80" data-aos="fade-up">
+                    Check out my latest content!
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[color:var(--bronze-brown)] text-[#fff] py-12 px-6 mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h2 class="text-3xl font-bold font-['Fredoka']">The Creative Cornerstone</h2>
+                <p class="text-sm opacity-80 mt-2">Let's build something amazing together.</p>
+            </div>
+            <div class="flex space-x-6 text-2xl">
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-12 opacity-50 text-sm border-t border-white/20 pt-6">
+            &copy; 2025 Creative Cornerstone. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        const textElement = document.getElementById('typewriter');
+        const userName = "{{ profile.name if profile and profile.name else 'Alex' }}";
+        const phrases = [userName + '.', 'a Gamer.', 'a Developer.', 'a Dreamer.'];
+        let phraseIndex = 0,
+            charIndex = 0,
+            isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(type, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 50 : 100);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', type);
+
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+                menu.classList.toggle('flex');
+            });
+        }
+    </script>
+</body>
+</html>

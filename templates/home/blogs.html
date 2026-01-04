@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Cornerstone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #FAF8F1;
+            --pale-yellow: #FAEAB1;
+            --golden-sand: #E5BA73;
+            --bronze-brown: #C58940;
+        }
+
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #C58940 #FAF8F1;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FAF8F1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C58940;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--bronze-brown);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6, .nav-link {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .section-title-bg {
+            background-color: var(--pale-yellow);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 999px;
+            border: 2px solid var(--golden-sand);
+            color: #fff;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-pill {
+            transition: all 0.3s ease;
+        }
+
+        .nav-pill:hover {
+            background-color: var(--pale-yellow);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {% include 'flash_messages.html' %}
+    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-[#FAF8F1] border-b-2 border-[#FAEAB1] shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="flex items-center gap-2 text-lg md:text-3xl font-bold text-[color:var(--bronze-brown)] wiggle-hover min-w-0">
+                <i class="fa-solid fa-rocket flex-shrink-0"></i>
+                <span class="truncate">Creative Cornerstone</span>
+            </a>
+            <div class="hidden md:flex bg-white/80 px-4 py-2 rounded-full border-2 border-[color:var(--pale-yellow)] shadow-sm space-x-2 text-sm font-bold text-[color:var(--bronze-brown)] flex-shrink-0">
+                <a href="{{ url_for('index') }}" class="nav-pill px-4 py-2 rounded-full">Home</a>
+                <a href="{{ url_for('home_games') }}" class="nav-pill px-4 py-2 rounded-full">Ctrl+Alt Achieve</a>
+                <a href="{{ url_for('home_blogs') }}" class="nav-pill px-4 py-2 rounded-full {{ 'bg-[color:var(--pale-yellow)] text-white' if request.endpoint == 'home_blogs' else '' }}">Blog</a>
+                <a href="{{ url_for('home_projects') }}" class="nav-pill px-4 py-2 rounded-full">Project</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden ml-4 text-xl text-[color:var(--bronze-brown)] focus:outline-none flex-shrink-0">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-[color:var(--bg-cream)] border-b-2 border-[color:var(--pale-yellow)] p-4 flex-col space-y-4 shadow-lg text-center z-50">
+            <a href="{{ url_for('index') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Home</a>
+            <a href="{{ url_for('home_games') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Ctrl+Alt Achieve</a>
+            <a href="{{ url_for('home_blogs') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Blog</a>
+            <a href="{{ url_for('home_projects') }}" class="block font-bold text-[color:var(--bronze-brown)] py-2 hover:bg-[color:var(--pale-yellow)] rounded">Project</a>
+        </div>
+    </nav>
+    <main class="flex-grow pt-32 pb-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12" data-aos="fade-down">
+                <h2 class="text-4xl font-bold section-title-bg mb-8">Blogs</h2>
+                <div class="max-w-3xl mx-auto bg-white p-6 rounded-2xl border-2 border-[color:var(--pale-yellow)] shadow-sm">
+                    <p class="text-lg opacity-80 leading-relaxed text-[color:var(--bronze-brown)]">
+                        Welcome to my blog! Here I share my journey, tutorials, and thoughts on the latest in tech and gaming. Dive in and explore my stories.
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-8">
+                {% if blogs %}
+                {% for blog in blogs %}
+                <a href="{{ url_for('blog_details', id=blog.id) }}" class="block group">
+                    <article class="flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-md border-2 border-[color:var(--bg-cream)] hover:shadow-xl hover:border-[color:var(--golden-sand)] transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                        <div class="w-full md:w-5/12 h-64 md:h-auto relative bg-[color:var(--pale-yellow)] border-b-2 md:border-b-0 md:border-r-2 border-[color:var(--pale-yellow)] overflow-hidden">
+                            {% if blog.youtube_link %}
+                            <div class="w-full h-full relative">
+                                <!-- Using img preview for YT in list view for better performance/linking -->
+                                <img src="https://img.youtube.com/vi/{{ blog.youtube_link.split('v=')[1].split('&')[0] if 'v=' in blog.youtube_link else blog.youtube_link.split('/')[-1] }}/maxresdefault.jpg" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" alt="{{ blog.title }}">
+                                <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-all">
+                                    <i class="fa-solid fa-play-circle text-6xl text-white opacity-80 group-hover:opacity-100 transition-opacity"></i>
+                                </div>
+                            </div>
+                            {% elif blog.thumbnail %}
+                                {% if blog.thumbnail.startswith('http') %}
+                                <img src="{{ blog.thumbnail }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" alt="{{ blog.title }}">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='uploads/' + blog.thumbnail.replace('uploads/', '')) }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" alt="{{ blog.title }}">
+                                {% endif %}
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center bg-[color:var(--bg-cream)]">
+                                <i class="fa-solid fa-pen-fancy text-5xl text-[color:var(--golden-sand)] opacity-50"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col justify-center">
+                            {% if blog.created_at %}
+                            <div class="text-sm text-[color:var(--golden-sand)] font-bold mb-3 flex items-center gap-2 date-display" data-raw-date="{{ blog.created_at }}">
+                                <i class="fa-regular fa-calendar"></i>
+                                <span>Posted on {{ blog.created_at }}</span>
+                            </div>
+                            {% endif %}
+                            <h3 class="text-2xl md:text-3xl font-bold mb-4 text-[color:var(--bronze-brown)] group-hover:text-[color:var(--golden-sand)] transition-colors break-words">
+                                {{ blog.title }}
+                            </h3>
+                            <p class="text-gray-600 mb-6 leading-relaxed line-clamp-3 break-words">
+                                {{ blog.content }}
+                            </p>
+                            <span class="text-[color:var(--bronze-brown)] font-bold group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
+                                Read More <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </article>
+                </a>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-20 text-gray-400 bg-white rounded-3xl border-dashed border-4 border-[color:var(--pale-yellow)]">
+                    <div class="mb-4">
+                        <i class="fa-solid fa-mug-hot text-6xl text-[color:var(--pale-yellow)]"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-[color:var(--bronze-brown)] mb-2">No Stories Yet</h3>
+                    <p class="text-lg">Check back later for updates!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <footer class="bg-[color:var(--bronze-brown)] text-[#fff] py-12 px-6 mt-auto">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h2 class="text-3xl font-bold font-['Fredoka']">The Creative Cornerstone</h2>
+                <p class="text-sm opacity-80 mt-2">Let's build something amazing together.</p>
+            </div>
+            <div class="flex space-x-6 text-2xl">
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-[color:var(--pale-yellow)] transform hover:scale-110 transition"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-12 opacity-50 text-sm border-t border-white/20 pt-6">
+            &copy; 2025 {{ profile.name if profile else 'The Creative Cornerstone' }}. All rights reserved.
+        </div>
+    </footer>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+                menu.classList.toggle('flex');
+            });
+        }
+
+        function formatDates() {
+            const dateElements = document.querySelectorAll('.date-display span');
+            dateElements.forEach(el => {
+                const parent = el.closest('.date-display');
+                const raw = parent ? parent.getAttribute('data-raw-date') : null;
+                if (!raw) return;
+                const date = new Date(raw);
+                if (isNaN(date.getTime())) return;
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                let hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                const strTime = hours + ':' + minutes + ' ' + ampm;
+                el.textContent = `Posted on ${day}/${month}/${year} on ${strTime}`;
+            });
+        }
+        document.addEventListener('DOMContentLoaded', formatDates);
+    </script>
+</body>
+</html>

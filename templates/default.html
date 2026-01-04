@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Cornerstone</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-bg-light: #FAF8F1;
+            --color-sidebar: #FAEAB1;
+            --color-gold: #E5BA73;
+            --color-brown: #C58940;
+            --text-dark: #2d3436;
+            --text-light: #ffffff;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 78px;
+            --header-height: 70px;
+            --transition-speed: 0.5s;
+        }
+
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #C58940 #FAF8F1;
+            scroll-behavior: smooth;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #C58940 #FAF8F1;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FAF8F1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C58940;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b07d3a;
+        }
+
+        body {
+            background-color: var(--color-bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .no-transition * {
+            transition: none !important;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--sidebar-width);
+            background: var(--color-sidebar);
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .sidebar.close {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar .logo-details {
+            height: var(--header-height);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            overflow: hidden;
+        }
+
+        .sidebar .logo-details span {
+            font-size: 22px;
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .sidebar.close .logo-details span {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar .nav-links {
+            height: 100%;
+            padding: 30px 0 150px 0;
+            overflow: auto;
+        }
+
+        .sidebar .nav-links::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar .nav-links li {
+            position: relative;
+            list-style: none;
+            transition: all 0.4s ease;
+            margin: 8px 0;
+        }
+
+        .sidebar .nav-links li:hover {
+            background: var(--color-brown);
+        }
+
+        .sidebar .nav-links li:hover .link_name,
+        .sidebar .nav-links li:hover .menu-icon img {
+            color: var(--color-bg-light);
+            filter: invert(100%);
+        }
+
+        .sidebar .nav-links li.active {
+            background: var(--color-brown);
+        }
+
+        .sidebar .nav-links li.active .link_name {
+            color: var(--color-bg-light);
+        }
+
+        .sidebar .nav-links li.active .menu-icon img {
+            filter: invert(100%);
+        }
+
+        .sidebar .nav-links li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .sidebar .nav-links li a .menu-icon {
+            height: 50px;
+            min-width: 78px;
+            text-align: center;
+            line-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar .nav-links li a .menu-icon img {
+            width: 28px;
+            height: 28px;
+            object-fit: cover;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-links li a .link_name {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.4s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar.close .nav-links li a .link_name {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar .nav-links li .sub-menu {
+            padding: 6px 12px;
+            background: var(--color-brown);
+            color: var(--color-bg-light);
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0s;
+            z-index: 99;
+        }
+
+        .sidebar.close .nav-links li:hover .sub-menu {
+            display: block;
+            top: 50%;
+            opacity: 1;
+            pointer-events: auto;
+            transition: all 0.4s ease;
+        }
+
+        .home-section {
+            position: relative;
+            background: var(--color-bg-light);
+            min-height: 100vh;
+            left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        .sidebar.close ~ .home-section {
+            left: var(--sidebar-collapsed-width);
+            width: calc(100% - var(--sidebar-collapsed-width));
+        }
+
+        .home-section nav {
+            height: var(--header-height);
+            background: var(--color-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            padding: 0 20px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+        }
+
+        .home-section nav .sidebar-button {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .home-section nav .sidebar-button i {
+            font-size: 30px;
+            margin-right: 15px;
+            cursor: pointer;
+            color: var(--text-dark);
+            flex-shrink: 0;
+        }
+
+        .home-section nav .profile-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .home-section nav .profile-details .profile_img,
+        .home-section nav .profile-details .logout_img {
+            height: 40px;
+            width: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--color-brown);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .home-section nav .profile-details img:hover {
+            transform: scale(1.1);
+        }
+
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            backdrop-filter: blur(2px);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -100%;
+                width: 260px;
+            }
+            .sidebar.close {
+                left: -100%;
+                width: 260px;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            .home-section {
+                left: 0;
+                width: 100%;
+            }
+            .sidebar.close ~ .home-section {
+                left: 0;
+                width: 100%;
+            }
+            .sidebar .nav-links li .sub-menu {
+                display: none !important;
+            }
+            .sidebar .nav-links li a .link_name {
+                opacity: 1;
+                pointer-events: auto;
+                display: block;
+            }
+            .sidebar .logo-details span {
+                opacity: 1;
+                pointer-events: auto;
+                display: block;
+            }
+            .home-section nav {
+                padding: 0 15px;
+            }
+            .home-section nav .sidebar-button .dashboard {
+                display: block;
+                font-size: 18px;
+            }
+            .home-section nav .profile-details {
+                gap: 10px;
+            }
+            .home-section nav .profile-details .profile_img,
+            .home-section nav .profile-details .logout_img {
+                height: 35px;
+                width: 35px;
+            }
+        }
+    </style>
+</head>
+<body class="no-transition">
+    <div id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+    {% include 'flash_messages.html' %}
+    <div class="sidebar">
+        <div class="logo-details">
+            <img src="{{ url_for('static', filename='images/dashboard.png') }}" alt="Flask Logo" style="width: 35px; height: 35px; margin-right: 10px;">
+            <span class="logo_name">My Dashboard</span>
+        </div>
+        <ul class="nav-links">
+            <li data-path="{{ url_for('dashboard') }}" data-is-root="true">
+                <a href="{{ url_for('dashboard') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/home.png') }}" alt="Home"></div>
+                    <span class="link_name">Home</span>
+                </a>
+            </li>
+            <li data-path="{{ url_for('games') }}">
+                <a href="{{ url_for('games') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/console.png') }}" alt="Games"></div>
+                    <span class="link_name">Games</span>
+                </a>
+            </li>
+            <li data-path="{{ url_for('blogs') }}">
+                <a href="{{ url_for('blogs') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/blogging.png') }}" alt="Blogs"></div>
+                    <span class="link_name">Blogs</span>
+                </a>
+            </li>
+            <li data-path="{{ url_for('products') }}">
+                <a href="{{ url_for('products') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/box.png') }}" alt="Products"></div>
+                    <span class="link_name">Products</span>
+                </a>
+            </li>
+            <li data-path="{{ url_for('projects') }}">
+                <a href="{{ url_for('projects') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/project-management.png') }}" alt="Projects"></div>
+                    <span class="link_name">Projects</span>
+                </a>
+            </li>
+            <li data-path="{{ url_for('profile') }}">
+                <a href="{{ url_for('profile') }}">
+                    <div class="menu-icon"><img src="{{ url_for('static', filename='images/user.png') }}" alt="Profile"></div>
+                    <span class="link_name">Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <section class="home-section">
+        <nav>
+            <div class="sidebar-button">
+                <i class='bx bx-menu sidebarBtn'></i>
+                <span class="dashboard">Creative Cornerstone</span>
+            </div>
+            <div class="profile-details">
+                <a href="{{url_for('profile')}}"><img src="{{ url_for('static', filename='images/user.png') }}" class="profile_img" alt="Profile"></a>
+                <a href="{{url_for('logout')}}"><img src="{{ url_for('static', filename='images/out.png') }}" class="logout_img" alt="Logout"></a>
+            </div>
+        </nav>
+        <script>
+            let sidebar = document.querySelector(".sidebar");
+            let sidebarBtn = document.querySelector(".sidebarBtn");
+            let overlay = document.getElementById("sidebar-overlay");
+            const body = document.body;
+            const SIDEBAR_STATUS_KEY = 'sidebarStatus';
+            const MOBILE_BREAKPOINT = 768;
+
+            function setSidebarState(isClosed) {
+                if (window.innerWidth > MOBILE_BREAKPOINT) {
+                    if (isClosed) {
+                        sidebar.classList.add("close");
+                        localStorage.setItem(SIDEBAR_STATUS_KEY, 'close');
+                        sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+                    } else {
+                        sidebar.classList.remove("close");
+                        localStorage.setItem(SIDEBAR_STATUS_KEY, 'open');
+                        sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+                    }
+                } else {
+                    if (!isClosed) {
+                        sidebar.classList.add("mobile-open");
+                        overlay.style.display = "block";
+                    } else {
+                        sidebar.classList.remove("mobile-open");
+                        overlay.style.display = "none";
+                    }
+                }
+            }
+
+            function closeMobileSidebar() {
+                sidebar.classList.remove("mobile-open");
+                overlay.style.display = "none";
+            }
+
+            (function initializeSidebarOnLoad() {
+                const savedState = localStorage.getItem(SIDEBAR_STATUS_KEY);
+                const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+                if (!isMobile) {
+                    if (savedState === 'close') {
+                        sidebar.classList.add("close");
+                        sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+                    } else {
+                        sidebar.classList.remove("close");
+                        sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+                    }
+                } else {
+                    sidebar.classList.remove("close");
+                    sidebar.classList.remove("mobile-open");
+                }
+                requestAnimationFrame(() => {
+                    body.classList.remove("no-transition");
+                });
+            })();
+
+            sidebarBtn.addEventListener("click", () => {
+                if (window.innerWidth > MOBILE_BREAKPOINT) {
+                    let isClosed = !sidebar.classList.contains("close");
+                    setSidebarState(isClosed);
+                } else {
+                    let isOpen = sidebar.classList.contains("mobile-open");
+                    setSidebarState(isOpen);
+                }
+            });
+
+            function setActiveLink() {
+                const currentPath = window.location.pathname.replace(/\/$/, "");
+                document.querySelectorAll(".nav-links li").forEach(i => i.classList.remove("active"));
+                document.querySelectorAll(".nav-links li").forEach(listItem => {
+                    const dataPath = listItem.dataset.path;
+                    if (dataPath === currentPath) {
+                        listItem.classList.add('active');
+                    } else if (listItem.dataset.isRoot === 'true' && (currentPath === '' || currentPath === '/')) {
+                        listItem.classList.add('active');
+                    }
+                });
+            }
+            setActiveLink();
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > MOBILE_BREAKPOINT) {
+                    overlay.style.display = "none";
+                    sidebar.classList.remove("mobile-open");
+                    const savedState = localStorage.getItem(SIDEBAR_STATUS_KEY);
+                    if (savedState === 'close') sidebar.classList.add("close");
+                    else sidebar.classList.remove("close");
+                } else {
+                    sidebar.classList.remove("close");
+                }
+            });
+        </script>
