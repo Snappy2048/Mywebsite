@@ -4,7 +4,7 @@ from psycopg2.extras import RealDictCursor
 from connection import create_connection
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-# new
+# new one
 app = Flask(__name__)
 
 secret_key = os.urandom(24)
