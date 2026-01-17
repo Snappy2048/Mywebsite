@@ -9,11 +9,10 @@ app = Flask(__name__)
 
 secret_key = os.urandom(24)
 app.secret_key = secret_key
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'uploads')
+app.config['UPLOAD_FOLDER'] = os.path.join(APP_ROOT, 'static', 'uploads')
+UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
 
 def allowed_file(filename):
     return (
@@ -176,7 +175,7 @@ def login():
             else:
                 flash('Invalid username or password. Please try again.222222', 'danger')
         else:
-            flash('Invalid username or password. Please try again.00111111', 'danger')
+            flash('Invalid username or password. Please try again.111111', 'danger')
         return redirect(url_for('login'))
     return render_template('login.html')
 
@@ -783,6 +782,7 @@ def update_profile():
     except Exception as e:
         conn.rollback()
         flash(f'Error updating profile: {e}', 'error')
+        print(f"Error updating profile: {e}")
     finally:
         cur.close()
         conn.close()
