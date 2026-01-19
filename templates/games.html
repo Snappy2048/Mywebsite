@@ -263,10 +263,23 @@
     }
 
     .play-modal-content {
-        max-width: 900px;
+        max-width: 1400px;
         height: 80vh;
         display: flex;
+        flex-direction: row;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .game-main-area {
+        flex: 1;
+        display: flex;
         flex-direction: column;
+        min-width: 0;
+    }
+
+    .game-header {
+        margin-bottom: 10px;
     }
 
     .game-frame-container {
@@ -278,6 +291,42 @@
         align-items: center;
         justify-content: center;
         position: relative;
+    }
+
+    .game-sidebar {
+        width: 350px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        overflow-y: auto;
+        border: 2px solid var(--color-brown, #FA7070);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .game-sidebar h3 {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--text-dark, #333);
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--color-brown, #FA7070);
+    }
+
+    .game-sidebar .description {
+        font-size: 0.95rem;
+        color: #666;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+        .play-modal-content {
+            flex-direction: column;
+        }
+        .game-sidebar {
+            width: 100%;
+            max-height: 300px;
+        }
     }
 
     .game-frame-container iframe {
@@ -392,7 +441,7 @@
                 <h3 class="card-title">{{ game.title }}</h3>
                 <p class="card-content">{{ game.description }}</p>
                 {% if game.embed_code %}
-                <button onclick='openPlayModal(`{{ game.embed_code|safe }}`, `{{ game.title }}`)' class="btn-play">Play Now</button>
+                <button onclick='openPlayModal(`{{ game.embed_code|safe }}`, `{{ game.title|escape }}`, `{{ game.description|escape if game.description else "" }}`)' class="btn-play">Play Now</button>
                 {% elif game.link %}
                 <a href="{{ game.link }}" target="_blank" class="btn-play">Play External</a>
                 {% else %}
@@ -413,8 +462,16 @@
 <div id="playModal" class="modal">
     <div class="modal-content play-modal-content">
         <span class="close-modal" onclick="closePlayModal()">&times;</span>
-        <h2 id="playModalTitle" style="margin-bottom: 10px; color: var(--color-brown, #FA7070);">Playing Game</h2>
-        <div id="gameContainer" class="game-frame-container"></div>
+        <div class="game-main-area">
+            <div class="game-header">
+                <h2 id="playModalTitle" style="margin-bottom: 10px; color: var(--color-brown, #FA7070);">Playing Game</h2>
+            </div>
+            <div id="gameContainer" class="game-frame-container"></div>
+        </div>
+        <div class="game-sidebar">
+            <h3>About This Game</h3>
+            <div id="playModalDescription" class="description">No description available.</div>
+        </div>
     </div>
 </div>
 
@@ -452,11 +509,15 @@
     const playModal = document.getElementById("playModal");
     const gameContainer = document.getElementById("gameContainer");
 
-    function openPlayModal(embedCode, title) {
+    function openPlayModal(embedCode, title, description) {
         if (!embedCode || embedCode === 'None') return;
         const titleEl = document.getElementById('playModalTitle');
+        const descEl = document.getElementById('playModalDescription');
         if (titleEl) {
             titleEl.innerText = title || "Playing Game";
+        }
+        if (descEl) {
+            descEl.textContent = description || 'No description available for this game.';
         }
         gameContainer.innerHTML = '';
         var iframe = document.createElement('iframe');
