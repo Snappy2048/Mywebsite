@@ -1,10 +1,15 @@
 import psycopg2
 from psycopg2 import OperationalError
 
+#DB_HOST = 'localhost'
+#DB_NAME = 'TheCreativeCornerstone'
+#DB_USER = 'postgres'
+#DB_PASS = 'Aaditya@123'
+
 DB_HOST = 'localhost'
-DB_NAME = 'TheCreativeCornerstone'
-DB_USER = 'postgres'
-DB_PASS = 'Aaditya@123'
+DB_NAME = 'brightkid'
+DB_USER = 'fmug'
+DB_PASS = 'W@IIZT-S262fL[Yz'
 
 def create_connection():
     try:
